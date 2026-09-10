@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+export default function App() {
+  const [ingredient, setIngredient] = useState('');
+  const [recipes, setRecipes] = useState([]);
+
+  const search = async (e) => {
+    e.preventDefault();
+    const res = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredient}&number=3&apiKey=e1df7b84b3154af0bdbfae3bfeb62482`);
+    setRecipes(await res.json());
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: '20px' }}>
+      <form onSubmit={search}>
+        <input value={ingredient} onChange={(e) => setIngredient(e.target.value)} placeholder="ingredient" />
+        <button>Search</button>
+      </form>
+      {recipes.map(r => <div key={r.id}><h3>{r.title}</h3><img src={r.image} width="150" alt="" /></div>)}
     </div>
   );
 }
-
-export default App;
